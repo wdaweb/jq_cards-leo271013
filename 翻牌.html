@@ -6,22 +6,28 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Zen+Antique+Soft&display=swap"
+    rel="stylesheet">
+
 </head>
 
 <style>
   * {
     margin: auto;
+    font-family: 'Roboto Mono', serif;
   }
 
   body {
     background: url(./resource/body.jpg);
+    transform: rotate3d();
   }
 
   .home {
     width: 419px;
     height: 120px;
     background: url(./resource/home.jpg);
-    visibility: hidden;
   }
 
   .hide {
@@ -30,7 +36,7 @@
 
   input {
     border-radius: 10px;
-    background-color: cornflowerblue;
+    background-color: rgb(75, 179, 97);
     color: white;
     margin: 10px;
     box-shadow: 0.1em 0.1em 0.2em black;
@@ -42,15 +48,18 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    border: 1px solid black;
+    border: 3px solid black;
+    border-radius: 10px;
     margin-top: 10px;
+    position: relative;
   }
 
   #view {
     width: 760px;
     height: 400px;
     padding: 0;
-    border: 1px solid black;
+    border: 3px solid black;
+    border-radius: 10px;
     margin-top: 20px;
     margin-bottom: -180px;
     display: flex;
@@ -63,6 +72,7 @@
     display: flex;
     width: 400px;
     flex-wrap: wrap;
+    padding-top: 100px;
   }
 
   .pw {
@@ -86,6 +96,7 @@
     text-align: center;
     font-size: 1.3rem;
     margin-left: 5px;
+    margin-bottom: 80px;
   }
 
   #right input {
@@ -96,17 +107,24 @@
   }
 
   #right input:hover {
-    font-size: 1.3rem;
-    line-height: 1.3rem;
+    font-size: 1.2rem;
+    line-height: 1.2rem;
   }
 
   #pw {
-    width: 41px;
+    display: inline-block;
+    width: 338px;
+    height: 2rem;
+    overflow: hidden;
     letter-spacing: 10px;
     margin-left: -5px;
     color: rgb(221, 17, 17);
     font-size: 1.3rem;
-    text-shadow: .1em .1em .1em rgb(255, 255, 255)
+    text-shadow: .1em .1em .1em rgb(255, 255, 255);
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    margin-left: -15px;
+    padding-left: 5px;
   }
 
   .box {
@@ -116,6 +134,9 @@
     width: 130px;
     line-height: 130px;
     background-color: cornflowerblue;
+    transition: transform .5s;
+    transform: rotateY(180deg);
+    border-radius: 10px;
   }
 
   #hint {
@@ -125,16 +146,36 @@
     z-index: -1;
   }
 
-  #view :nth-child(3) {
-    background: url(./resource/21.png)no-repeat center/contain;
+  .t1 {
+    background: url(./resource/1.png)no-repeat center/cover;
   }
 
-  #view :nth-child(8) {
-    background: url(./resource/22.png)no-repeat ;
+  .t2 {
+    background: url(./resource/2.png)no-repeat center/cover;
   }
 
-  #view :nth-child(13) {
-    background: url(./resource/23.png)no-repeat center/contain;
+  .t3 {
+    background: url(./resource/3.png)no-repeat center/cover;
+  }
+
+  #show {
+    width: 800px;
+    height: 700px;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.815);
+    z-index: 99;
+  }
+
+  #ts {
+    position: absolute;
+    left: 50%;
+    font-size: 33rem;
+    color: white;
+    transform: translateX(-50%);
+  }
+
+  .spin {
+    transform: rotateY(360deg);
   }
 </style>
 
@@ -144,10 +185,15 @@
   <p id="hint"></p>
 
   <div id="game">
+    <div id="show"><span id="ts"></span></div>
     <div id="view"></div>
+    <p
+      style="text-align:left;font-size: 2rem;color: white;text-shadow: 0.1em 0.1em 0.2em black;position: absolute;top: 433px;left: 40px;">
+      Keyboard:</p>
     <div id="password"></div>
     <div id="right">
-      <p style="text-align:left;margin-bottom:20px;font-size: 2rem;color: white;text-shadow: 0.1em 0.1em 0.2em black">
+      <p
+        style="text-align:left;margin-bottom:20px;font-size: 2rem;color: white;text-shadow: 0.1em 0.1em 0.2em black;margin-left: 20px;">
         Ans:<br><span id="pw"></span></p>
       <input type="button" value="清除" id="clear">
       <input type="button" value="確認" id="check">
@@ -159,74 +205,142 @@
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-    let level = 5
+    let level = 4
 
     const games = () => {
-      $('.pw').remove()
-      $('.box').remove()
-      $("#hint").text("")
-      $("#pw").text("")
-      for (let i = 0; i < 15 - level; i++) {
-        let val = Math.round(Math.random() * 25) + 65
-        let bs = Math.round(Math.random()) * 32
-        $('#password').append(
-          `<input type="button" value="${String.fromCharCode(val + bs)}" class="pw">`
-        )
-        $('#view').append(
-          `<div class="box">${String.fromCharCode(val + bs)}</div>`
-        )
-      }
-      for (let i = 0; i < level; i++) {
-        let val = Math.round(Math.random() * 25) + 65
-        let bs = Math.round(Math.random()) * 32
-        $('#password').append(
-          `<input type="button" value="${String.fromCharCode(val + bs)}" class="pw">`
-        )
-        $('#view').append(
-          `<div class="box">${String.fromCharCode(val + bs)}</div>`
-        )
 
-        // $(".box").eq(3).addClass("t1")
-        // $(".box").eq(8).addClass("t2")
-        // $(".box").eq(13).addClass("t3")
+      $('#ts').text(3)
+
+      setTimeout(() => {
+        $('#ts').text(2)
+      }, 1000);
+
+      setTimeout(() => {
+        $('#ts').text(1)
+      }, 2000);
+
+      setTimeout(() => {
+        $("#show").addClass("hide")
+        for (let i = 0; i < 15 - level; i++) {
+          let val = Math.round(Math.random() * 25) + 65
+          let bs = Math.round(Math.random()) * 32
+          $('#password').append(
+            `<input type="button" value="${String.fromCharCode(val + bs)}" class="pw">`
+          )
+          $('#view').append(
+            `<div class="box"><span style="visibility: hidden;">${String.fromCharCode(val + bs)}</span></div>`
+          )
+        }
+
+        for (let i = 0; i < level; i++) {
+          let val = Math.round(Math.random() * 25) + 65
+          let bs = Math.round(Math.random()) * 32
+          $('#password').append(
+            `<input type="button" value="${String.fromCharCode(val + bs)}" class="pw" id="c${i}">`
+          )
+          $('#view').append(
+            `<div class="box"><p id="b${i}" style="visibility: hidden;">${i + 1}</p></div>`
+          )
+
+          $("#hint").text($("#hint").text() + `${String.fromCharCode(val + bs)}`)
+        }
+
+        for (let i = 0; i < 15; i++) {
+          const target = Math.round(Math.random() * 15)
+          const target2 = Math.round(Math.random() * 15)
+
+          $('.pw').eq(target).insertAfter($('.pw').eq(i))
+          $('.box').eq(target2).insertAfter($('.box').eq(i))
+        }
+        $(".pw").on('click', function () {
+          $("#pw").text($("#pw").text() + $(this).val())
+        })
+
+        $("#clear").on('click', function () {
+          $("#pw").text("")
+        })
 
 
-        $("#hint").text($("#hint").text() + `${String.fromCharCode(val + bs)}`)
-      }
+        setTimeout(() => {
+          $(".box").addClass("spin")
+        }, 100);
 
-      for (let i = 0; i < 15; i++) {
-        const target = Math.round(Math.random() * 15)
-        const target2 = Math.round(Math.random() * 15)
+        setTimeout(() => {
+          $('.box').find($("p")).attr("style", "visibility: visible;")
+        }, 300);
 
-        $('.pw').eq(target).insertAfter($('.pw').eq(i))
-        $('.box').eq(target2).insertAfter($('.box').eq(i))
-      }
-      $(".pw").on('click', function () {
-        $("#pw").text($("#pw").text() + $(this).val())
-        console.log(ss)
-      })
+        setTimeout(() => {
+          $(".box").removeClass("spin")
+        }, 1600);
 
-      $("#clear").on('click', function () {
-        $("#pw").text("")
-      })
+        setTimeout(() => {
+          $('.box').find($("p")).attr("style", "visibility: hidden;")
+        }, 1650);
+
+        setTimeout(() => {
+          $(".box").addClass("spin")
+        }, 2000);
+
+        setTimeout(() => {
+          for (let i = 0; i < level; i++) {
+            $(`#b${i}`).text($(`#c${i}`).val())
+          }
+          $('.box').find($("p")).attr("style", "visibility: visible;")
+          $('.box').find($("span")).attr("style", "visibility: visible;")
+        }, 2200);
+
+      }, 3000);
+
     }
-
-    games()
-
     let ss = 0
 
     $("#check").on('click', function () {
-      if ($("#pw").text() === $("#hint").text()) {
-        alert(`答對`)
-        ss = 0
-        $("#num").text(ss)
-        level++
-        games()
+      if ($("#pw").text() === $("#hint").text() && level === 15) {
+        Swal.fire({
+          title: '你是鬼吧? 不跟你玩了啦...',
+          width: 600,
+          padding: '3em',
+          background: '#fff url(https://sweetalert2.github.io/images/trees.png)',
+          backdrop: `
+    rgba(0,0,123,0.4)
+    url("https://sweetalert2.github.io/images/nyan-cat.gif")
+    left top
+    no-repeat
+  `
+        })
+      } else if ($("#pw").text() === $("#hint").text()) {
+        Swal.fire({
+          title: '答對了!',
+          text: "是否繼續挑戰?",
+          icon: 'success',
+          showCancelButton: true,
+          confirmButtonText: '再來啊!',
+          cancelButtonText: '不要，我怕了',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            ss = 0
+            $("#num").text(ss)
+            level++
+            $("#show").removeClass("hide")
+            $('.pw').remove()
+            $('.box').remove()
+            $("#hint").text("")
+            $("#pw").text("")
+            games()
+          }
+        })
+
       } else {
+        Swal.fire({
+          icon: 'error',
+          title: '恭喜答錯',
+          text: '重新再來過',
+          animation: false,
+        })
         ss++
         $("#num").text(ss)
         $("#pw").text("")
-        alert(`答錯`)
       }
     })
 
@@ -235,9 +349,11 @@
 
       setTimeout(function () {
         $(".home").removeClass("hide")
-      }, 300);
+      }, 100);
 
     })
+
+    games()
 
   </script>
 </body>
