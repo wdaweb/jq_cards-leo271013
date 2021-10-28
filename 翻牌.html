@@ -24,11 +24,16 @@
     visibility: hidden;
   }
 
+  .hide {
+    visibility: hidden;
+  }
+
   input {
     border-radius: 10px;
-    background-color: rgb(23, 90, 7);
+    background-color: cornflowerblue;
     color: white;
-
+    margin: 10px;
+    box-shadow: 0.1em 0.1em 0.2em black;
   }
 
   #game {
@@ -49,11 +54,14 @@
     margin-top: 20px;
     margin-bottom: -180px;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
   }
 
   #password {
     display: flex;
-    width: 350px;
+    width: 400px;
     flex-wrap: wrap;
   }
 
@@ -61,6 +69,16 @@
     width: 60px;
     height: 35px;
     font-size: 1.5rem;
+    line-height: 1.5rem;
+  }
+
+  .pw:hover {
+    font-size: 1.8rem;
+    line-height: 1.8rem;
+  }
+
+  input:hover {
+    filter: hue-rotate(180deg);
   }
 
   #right {
@@ -71,29 +89,52 @@
   }
 
   #right input {
+    width: 57.61px;
+    height: 33px;
+    font-size: 1.1rem;
+    background-color: rgb(175, 45, 45);
+  }
+
+  #right input:hover {
     font-size: 1.3rem;
+    line-height: 1.3rem;
   }
 
   #pw {
     width: 41px;
     letter-spacing: 10px;
-    margin-left: 10px;
+    margin-left: -5px;
+    color: rgb(221, 17, 17);
+    font-size: 1.3rem;
+    text-shadow: .1em .1em .1em rgb(255, 255, 255)
   }
 
   .box {
     text-align: center;
-    font-size: 3rem;
-    height: 3.2rem;
-    width: 3.2rem;
-    line-height: 3.2rem;
+    font-size: 5rem;
+    height: 130px;
+    width: 130px;
+    line-height: 130px;
     background-color: cornflowerblue;
   }
 
   #hint {
     position: absolute;
-    top: 10px;
-    left: 37%;
+    top: 5%;
+    left: 45%;
     z-index: -1;
+  }
+
+  #view :nth-child(3) {
+    background: url(./resource/21.png)no-repeat center/contain;
+  }
+
+  #view :nth-child(8) {
+    background: url(./resource/22.png)no-repeat ;
+  }
+
+  #view :nth-child(13) {
+    background: url(./resource/23.png)no-repeat center/contain;
   }
 </style>
 
@@ -106,10 +147,11 @@
     <div id="view"></div>
     <div id="password"></div>
     <div id="right">
-      <p style="text-align:left;margin-bottom:20px;">密碼:<span id="pw"></span></p>
+      <p style="text-align:left;margin-bottom:20px;font-size: 2rem;color: white;text-shadow: 0.1em 0.1em 0.2em black">
+        Ans:<br><span id="pw"></span></p>
       <input type="button" value="清除" id="clear">
       <input type="button" value="確認" id="check">
-      <p>嘗試次數:<span id="num">0</span></p>
+      <p style="text-shadow: 0.1em 0.1em 0.2em rgb(255, 255, 255)">嘗試次數:<span id="num">0</span></p>
     </div>
   </div>
 
@@ -119,54 +161,82 @@
   <script>
     let level = 5
 
-    for (let i = 0; i < 15 - level; i++) {
-      let val = Math.round(Math.random() * 25) + 65
-      let bs = Math.round(Math.random()) * 32
-      $('#password').append(
-        `<input type="button" value="${String.fromCharCode(val + bs)}" class="pw">`
-      )
-      $('#view').append(
-        `<div class="box">${String.fromCharCode(val + bs)}</div>`
-      )
-    }
-    for (let i = 0; i < level; i++) {
-      let val = Math.round(Math.random() * 25) + 65
-      let bs = Math.round(Math.random()) * 32
-      $('#password').append(
-        `<input type="button" value="${String.fromCharCode(val + bs)}" class="pw">`
-      )
-      $('#view').append(
-        `<div class="box">${String.fromCharCode(val + bs)}</div>`
-      )
-
-      $("#hint").text($("#hint").text() + `${String.fromCharCode(val + bs)}`)
-    }
-
-    for (let i = 0; i < 15; i++) {
-      const target = Math.round(Math.random() * 15)
-      $('.pw').eq(target).insertAfter($('.pw').eq(i))
-      $('.box').eq(target).insertAfter($('.box').eq(i))
-    }
-
-    $(".pw").on('click', function () {
-      $("#pw").text($("#pw").text() + $(this).val())
-      console.log(ss)
-    })
-
-    $("#clear").on('click', function () {
+    const games = () => {
+      $('.pw').remove()
+      $('.box').remove()
+      $("#hint").text("")
       $("#pw").text("")
-    })
+      for (let i = 0; i < 15 - level; i++) {
+        let val = Math.round(Math.random() * 25) + 65
+        let bs = Math.round(Math.random()) * 32
+        $('#password').append(
+          `<input type="button" value="${String.fromCharCode(val + bs)}" class="pw">`
+        )
+        $('#view').append(
+          `<div class="box">${String.fromCharCode(val + bs)}</div>`
+        )
+      }
+      for (let i = 0; i < level; i++) {
+        let val = Math.round(Math.random() * 25) + 65
+        let bs = Math.round(Math.random()) * 32
+        $('#password').append(
+          `<input type="button" value="${String.fromCharCode(val + bs)}" class="pw">`
+        )
+        $('#view').append(
+          `<div class="box">${String.fromCharCode(val + bs)}</div>`
+        )
+
+        // $(".box").eq(3).addClass("t1")
+        // $(".box").eq(8).addClass("t2")
+        // $(".box").eq(13).addClass("t3")
+
+
+        $("#hint").text($("#hint").text() + `${String.fromCharCode(val + bs)}`)
+      }
+
+      for (let i = 0; i < 15; i++) {
+        const target = Math.round(Math.random() * 15)
+        const target2 = Math.round(Math.random() * 15)
+
+        $('.pw').eq(target).insertAfter($('.pw').eq(i))
+        $('.box').eq(target2).insertAfter($('.box').eq(i))
+      }
+      $(".pw").on('click', function () {
+        $("#pw").text($("#pw").text() + $(this).val())
+        console.log(ss)
+      })
+
+      $("#clear").on('click', function () {
+        $("#pw").text("")
+      })
+    }
+
+    games()
 
     let ss = 0
 
     $("#check").on('click', function () {
       if ($("#pw").text() === $("#hint").text()) {
         alert(`答對`)
-        ss = -1
+        ss = 0
+        $("#num").text(ss)
         level++
+        games()
+      } else {
+        ss++
+        $("#num").text(ss)
+        $("#pw").text("")
+        alert(`答錯`)
       }
-      ss++
-      $("#num").text(ss)
+    })
+
+    $(".home").on('click', function () {
+      $(".home").addClass("hide")
+
+      setTimeout(function () {
+        $(".home").removeClass("hide")
+      }, 300);
+
     })
 
   </script>
