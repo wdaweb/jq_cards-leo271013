@@ -289,6 +289,15 @@
           $('.box').find($("span")).attr("style", "visibility: visible;")
         }, 2200);
 
+        setTimeout(() => {
+          $(".box").removeClass("spin")
+        }, 3500);
+
+        setTimeout(() => {
+          $('.box').find($("p")).attr("style", "visibility: hidden;")
+          $('.box').find($("span")).attr("style", "visibility: hidden;")
+        }, 3550);
+
       }, 3000);
 
     }
