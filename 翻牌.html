@@ -260,6 +260,7 @@
           $("#pw").text("")
         })
 
+        let op = 350 * level
 
         setTimeout(() => {
           $(".box").addClass("spin")
@@ -271,15 +272,15 @@
 
         setTimeout(() => {
           $(".box").removeClass("spin")
-        }, 1600);
+        }, 350 * level);
 
         setTimeout(() => {
           $('.box').find($("p")).attr("style", "visibility: hidden;")
-        }, 1650);
+        }, 350 * level + 50);
 
         setTimeout(() => {
           $(".box").addClass("spin")
-        }, 2000);
+        }, 350 * level + 400);
 
         setTimeout(() => {
           for (let i = 0; i < level; i++) {
@@ -287,16 +288,16 @@
           }
           $('.box').find($("p")).attr("style", "visibility: visible;")
           $('.box').find($("span")).attr("style", "visibility: visible;")
-        }, 2200);
+        }, 350 * level + 600);
 
         setTimeout(() => {
           $(".box").removeClass("spin")
-        }, 3500);
+        }, 700 * level + 1900);
 
         setTimeout(() => {
           $('.box').find($("p")).attr("style", "visibility: hidden;")
           $('.box').find($("span")).attr("style", "visibility: hidden;")
-        }, 3550);
+        }, 700 * level + 1950);
 
       }, 3000);
 
