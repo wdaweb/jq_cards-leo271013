@@ -159,10 +159,10 @@
   }
 
   #show {
-    width: 800px;
-    height: 700px;
-    position: absolute;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.815);
+    position: absolute;
     z-index: 99;
   }
 
@@ -181,15 +181,40 @@
   .swal2-x-mark {
     height: 80px;
   }
+
+  #show input:nth-child(1) {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    width: 450px;
+    font-size: 3rem;
+    transform: translateX(-52%);
+    background-color: rgb(10, 165, 69);
+  }
+
+  #show input:nth-child(2) {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    width: 450px;
+    font-size: 3rem;
+    transform: translateX(-52%);
+    background-color: rgb(165, 10, 10);
+  }
 </style>
 
 <body>
+
+  <div id="show">
+    <input type="button" value="簡單模式(無大小寫)" id="softcore">
+    <input type="button" value="困難模式" id="hardcore">
+    <span id="ts"></span>
+  </div>
 
   <div class="home"></div>
   <p id="hint"></p>
 
   <div id="game">
-    <div id="show"><span id="ts"></span></div>
     <div id="view"></div>
     <p
       style="text-align:left;font-size: 2rem;color: white;text-shadow: 0.1em 0.1em 0.2em black;position: absolute;top: 433px;left: 40px;">
@@ -209,6 +234,18 @@
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
+    $("#hardcore").on('click', function () {
+      games()
+      $(this).addClass("hide")
+      $("#softcore").addClass("hide")
+    })
+
+    $("#softcore").on('click', function () {
+      game1()
+      $(this).addClass("hide")
+      $("#hardcore").addClass("hide")
+    })
+
     let level = 4
 
     const games = () => {
@@ -264,7 +301,157 @@
           $("#pw").text("")
         })
 
-        let op = 350 * level
+        setTimeout(() => {
+          $(".box").addClass("spin")
+        }, 100);
+
+        setTimeout(() => {
+          $('.box').find($("p")).attr("style", "visibility: visible;")
+        }, 300);
+
+        setTimeout(() => {
+          $(".box").removeClass("spin")
+        }, 400 * level);
+
+        setTimeout(() => {
+          $('.box').find($("p")).attr("style", "visibility: hidden;")
+        }, 400 * level + 50);
+
+        setTimeout(() => {
+          $(".box").addClass("spin")
+        }, 400 * level + 400);
+
+        setTimeout(() => {
+          for (let i = 0; i < level; i++) {
+            $(`#b${i}`).text($(`#c${i}`).val())
+          }
+          $('.box').find($("p")).attr("style", "visibility: visible;")
+          $('.box').find($("span")).attr("style", "visibility: visible;")
+        }, 400 * level + 600);
+
+        setTimeout(() => {
+          $(".box").removeClass("spin")
+        }, 800 * level + 1900);
+
+        setTimeout(() => {
+          $('.box').find($("p")).attr("style", "visibility: hidden;")
+          $('.box').find($("span")).attr("style", "visibility: hidden;")
+        }, 800 * level + 1950);
+
+      }, 3000);
+
+      let ss = 0
+
+      $("#check").on('click', function () {
+        if ($("#pw").text() === $("#hint").text() && level === 15) {
+          Swal.fire({
+            title: '你是鬼吧? 不跟你玩了啦...',
+            width: 600,
+            padding: '3em',
+            background: '#fff url(https://sweetalert2.github.io/images/trees.png)',
+            backdrop: `
+rgba(0,0,123,0.4)
+url("https://sweetalert2.github.io/images/nyan-cat.gif")
+left top
+no-repeat
+`
+          })
+        } else if ($("#pw").text() === $("#hint").text()) {
+          Swal.fire({
+            title: '猜對囉，運氣不錯嘛',
+            text: "是否繼續挑戰?",
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: '再來啊!',
+            cancelButtonText: '不要，我怕了',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              ss = 0
+              $("#num").text(ss)
+              level++
+              $("#show").removeClass("hide")
+              $('.pw').remove()
+              $('.box').remove()
+              $("#hint").text("")
+              $("#pw").text("")
+              games()
+            }
+          })
+
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: '恭喜答錯',
+            text: '我看你完全是不懂哦?',
+            animation: false,
+          })
+          ss++
+          $("#num").text(ss)
+          $("#pw").text("")
+        }
+      })
+
+      $(".home").on('click', function () {
+        $(".home").addClass("hide")
+
+        setTimeout(function () {
+          $(".home").removeClass("hide")
+        }, 100);
+
+      })
+    }
+
+    const game1 = () => {
+
+      $('#ts').text(3)
+
+      setTimeout(() => {
+        $('#ts').text(2)
+      }, 1000);
+
+      setTimeout(() => {
+        $('#ts').text(1)
+      }, 2000);
+
+      setTimeout(() => {
+        $("#show").addClass("hide")
+        for (let i = 0; i < 15 - level; i++) {
+          let val = Math.round(Math.random() * 25) + 65
+          $('#password').append(
+            `<input type="button" value="${String.fromCharCode(val)}" class="pw">`
+          )
+          $('#view').append(
+            `<div class="box"><span style="visibility: hidden;">${String.fromCharCode(val)}</span></div>`
+          )
+        }
+
+        for (let i = 0; i < level; i++) {
+          let val = Math.round(Math.random() * 25) + 65
+          $('#password').append(
+            `<input type="button" value="${String.fromCharCode(val)}" class="pw" id="c${i}">`
+          )
+          $('#view').append(
+            `<div class="box"><p id="b${i}" style="visibility: hidden;">${i + 1}</p></div>`
+          )
+
+          $("#hint").text($("#hint").text() + `${String.fromCharCode(val)}`)
+        }
+
+        for (let i = 0; i < 15; i++) {
+          const target = Math.round(Math.random() * 15)
+          const target2 = Math.round(Math.random() * 15)
+
+          $('.pw').eq(target).insertAfter($('.pw').eq(i))
+          $('.box').eq(target2).insertAfter($('.box').eq(i))
+        }
+        $(".pw").on('click', function () {
+          $("#pw").text($("#pw").text() + $(this).val())
+        })
+
+        $("#clear").on('click', function () {
+          $("#pw").text("")
+        })
 
         setTimeout(() => {
           $(".box").addClass("spin")
@@ -276,15 +463,15 @@
 
         setTimeout(() => {
           $(".box").removeClass("spin")
-        }, 350 * level);
+        }, 400 * level);
 
         setTimeout(() => {
           $('.box').find($("p")).attr("style", "visibility: hidden;")
-        }, 350 * level + 50);
+        }, 400 * level + 50);
 
         setTimeout(() => {
           $(".box").addClass("spin")
-        }, 350 * level + 400);
+        }, 400 * level + 400);
 
         setTimeout(() => {
           for (let i = 0; i < level; i++) {
@@ -292,82 +479,82 @@
           }
           $('.box').find($("p")).attr("style", "visibility: visible;")
           $('.box').find($("span")).attr("style", "visibility: visible;")
-        }, 350 * level + 600);
+        }, 400 * level + 600);
 
         setTimeout(() => {
           $(".box").removeClass("spin")
-        }, 700 * level + 1900);
+        }, 800 * level + 1900);
 
         setTimeout(() => {
           $('.box').find($("p")).attr("style", "visibility: hidden;")
           $('.box').find($("span")).attr("style", "visibility: hidden;")
-        }, 700 * level + 1950);
+        }, 800 * level + 1950);
 
       }, 3000);
 
+      let ss = 0
+
+      $("#check").on('click', function () {
+        if ($("#pw").text() === $("#hint").text() && level === 15) {
+          Swal.fire({
+            title: '有點東西哦，試試看困難模式吧',
+            width: 600,
+            padding: '3em',
+            background: '#fff url(https://sweetalert2.github.io/images/trees.png)',
+            backdrop: `
+rgba(0,0,123,0.4)
+url("https://sweetalert2.github.io/images/nyan-cat.gif")
+left top
+no-repeat
+`
+          })
+        } else if ($("#pw").text() === $("#hint").text()) {
+          Swal.fire({
+            title: '恭喜答對!',
+            text: "是否繼續挑戰?",
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: '再來!',
+            cancelButtonText: '我想先休息',
+            reverseButtons: true
+          }).then((result) => {
+            if (result.isConfirmed) {
+              ss = 0
+              $("#num").text(ss)
+              level++
+              $("#show").removeClass("hide")
+              $('.pw').remove()
+              $('.box').remove()
+              $("#hint").text("")
+              $("#pw").text("")
+              game1()
+            }
+          })
+
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: '答錯囉',
+            text: '再想想看吧',
+            animation: false,
+          })
+          ss++
+          $("#num").text(ss)
+          $("#pw").text("")
+        }
+      })
+
+      $(".home").on('click', function () {
+        $(".home").addClass("hide")
+
+        setTimeout(function () {
+          $(".home").removeClass("hide")
+        }, 100);
+
+      })
     }
-    let ss = 0
 
-    $("#check").on('click', function () {
-      if ($("#pw").text() === $("#hint").text() && level === 15) {
-        Swal.fire({
-          title: '你是鬼吧? 不跟你玩了啦...',
-          width: 600,
-          padding: '3em',
-          background: '#fff url(https://sweetalert2.github.io/images/trees.png)',
-          backdrop: `
-    rgba(0,0,123,0.4)
-    url("https://sweetalert2.github.io/images/nyan-cat.gif")
-    left top
-    no-repeat
-  `
-        })
-      } else if ($("#pw").text() === $("#hint").text()) {
-        Swal.fire({
-          title: '答對了!',
-          text: "是否繼續挑戰?",
-          icon: 'success',
-          showCancelButton: true,
-          confirmButtonText: '再來啊!',
-          cancelButtonText: '不要，我怕了',
-          reverseButtons: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            ss = 0
-            $("#num").text(ss)
-            level++
-            $("#show").removeClass("hide")
-            $('.pw').remove()
-            $('.box').remove()
-            $("#hint").text("")
-            $("#pw").text("")
-            games()
-          }
-        })
 
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: '恭喜答錯',
-          text: '重新再來過',
-          animation: false,
-        })
-        ss++
-        $("#num").text(ss)
-        $("#pw").text("")
-      }
-    })
-
-    $(".home").on('click', function () {
-      $(".home").addClass("hide")
-
-      setTimeout(function () {
-        $(".home").removeClass("hide")
-      }, 100);
-
-    })
-
-    games()
 
   </script>
 </body>
