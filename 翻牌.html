@@ -36,8 +36,7 @@
 
   input {
     border-radius: 10px;
-    background-color: rgb(75, 179, 97);
-    color: white;
+    background-color: rgb(255, 252, 80);
     margin: 10px;
     box-shadow: 0.1em 0.1em 0.2em black;
   }
@@ -52,6 +51,7 @@
     border-radius: 10px;
     margin-top: 10px;
     position: relative;
+    background-color: rgb(216, 216, 216);
   }
 
   #view {
@@ -103,7 +103,12 @@
     width: 57.61px;
     height: 33px;
     font-size: 1.1rem;
-    background-color: rgb(175, 45, 45);
+    background-color: rgb(214, 40, 40);
+    color: white;
+  }
+
+  #right input:nth-child(3) {
+    background-color: rgb(75, 179, 97);
   }
 
   #right input:hover {
@@ -137,6 +142,9 @@
     transition: transform .5s;
     transform: rotateY(180deg);
     border-radius: 10px;
+    border: 5px outset rgb(32, 102, 231);
+    box-sizing: border-box;
+    color: white;
   }
 
   #hint {
@@ -164,6 +172,7 @@
     background-color: rgba(0, 0, 0, 0.815);
     position: absolute;
     z-index: 99;
+    text-shadow: 1rem 1rem 2rem black;
   }
 
   #ts {
@@ -189,7 +198,8 @@
     width: 350px;
     font-size: 2rem;
     transform: translateX(-52%);
-    background-color: rgb(10, 165, 69);
+    background-color: rgb(75, 179, 97);
+    color: white;
   }
 
   #show input:nth-child(2) {
@@ -200,6 +210,7 @@
     font-size: 2rem;
     transform: translateX(-52%);
     background-color: rgb(165, 10, 10);
+    color: white;
   }
 </style>
 
@@ -238,6 +249,7 @@
       games()
       $(this).addClass("hide")
       $("#softcore").addClass("hide")
+      $('#game').css("background-color", 'rgb(41, 41, 41)')
     })
 
     $("#softcore").on('click', function () {
